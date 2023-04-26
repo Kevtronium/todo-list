@@ -1,9 +1,6 @@
 import "./main.css";
+import createApp from "./App";
 
-const msg = document.createElement("p");
-
-msg.textContent = "Hello World";
-msg.classList.add("text-gray-500");
-
+const app = createApp();
 const root = document.querySelector("#root");
-root.appendChild(msg);
+root.appendChild(app);
