@@ -110,13 +110,23 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 
 /***/ }),
 
+/***/ "./src/components/Header/Header.js":
+/*!*****************************************!*\
+  !*** ./src/components/Header/Header.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst headerStyles = [\"bg-yellow-500\"];\n\nfunction createHeader() {\n  const header = document.createElement(\"header\");\n  const text = document.createElement(\"h1\");\n\n  text.textContent = \"ToDo\";\n  header.appendChild(text);\n  header.classList.add(...headerStyles);\n  return header;\n}\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createHeader);\n\n\n//# sourceURL=webpack://todo-list/./src/components/Header/Header.js?");
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _main_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./main.css */ \"./src/main.css\");\n\n\nconst msg = document.createElement('p');\n\nmsg.textContent = 'Hello Webpack';\nmsg.classList.add('text-gray-500');\n\nconst root = document.querySelector('#root');\nroot.appendChild(msg);\n\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _main_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./main.css */ \"./src/main.css\");\n/* harmony import */ var _components_Header_Header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Header/Header */ \"./src/components/Header/Header.js\");\n\n\n\nconst appStyles = [\"grid\", \"grid-cols-[1fr_3fr]\", \"h-screen\"];\n\nconst header = (0,_components_Header_Header__WEBPACK_IMPORTED_MODULE_1__[\"default\"])();\nconst app = document.createElement(\"div\");\napp.classList.add(...appStyles);\napp.appendChild(header);\nconst root = document.querySelector(\"#root\");\nroot.appendChild(app);\n\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
 
 /***/ })
 
