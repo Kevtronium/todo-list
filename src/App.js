@@ -9,10 +9,15 @@ const appStyles = [
   "h-screen",
 ];
 
+function page(name, isActive = false) {
+  return { name, isActive, tasks: [] };
+}
+
 function createApp() {
   const app = document.createElement("div");
+  const pages = [page("Inbox", true), page("Today"), page("Weekly")];
   const header = createHeader();
-  const sidebar = createSidebar();
+  const sidebar = createSidebar(pages);
   const taskView = createTaskView();
 
   app.classList.add(...appStyles);
