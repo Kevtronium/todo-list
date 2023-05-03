@@ -3,7 +3,7 @@ const pageStyles = {
     "w-full",
     "text-2xl",
     "font-bold",
-    "hover:bg-gray-300",
+    "hover:bg-gray-400",
     "active:bg-gray-500",
     "text-left",
   ],

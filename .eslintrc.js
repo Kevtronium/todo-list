@@ -10,6 +10,9 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { devDependencies: true, packageDir: __dirname },
+    ],
   },
 };

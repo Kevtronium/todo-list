@@ -1,4 +1,6 @@
 import createPage from "../Page/Page";
+import createPageList from "../PageList/PageList";
+import createProjects from "../Projects/Projects";
 
 const sidebarStyles = [
   "flex",
@@ -6,17 +8,19 @@ const sidebarStyles = [
   "cols-span-1",
   "bg-blue-500",
   "p-6",
-  "gap-2",
+  "gap-4",
 ];
 
-function createSidebar(pages) {
+function createSidebar(pages, projectsList) {
   const sidebar = document.createElement("div");
   const pagesEles = pages.map((page) => createPage(page));
+  const pageList = createPageList(pagesEles);
+  const projectsEle = createProjects(projectsList);
+
   sidebar.classList.add(...sidebarStyles);
 
-  pagesEles.forEach((ele) => {
-    sidebar.appendChild(ele);
-  });
+  sidebar.appendChild(pageList);
+  sidebar.appendChild(projectsEle);
 
   return sidebar;
 }
