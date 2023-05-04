@@ -12,7 +12,7 @@ module.exports = {
   rules: {
     "import/no-extraneous-dependencies": [
       "error",
-      { devDependencies: true, packageDir: __dirname },
+      { devDependencies: true, peerDependencies: true, packageDir: __dirname },
     ],
   },
 };

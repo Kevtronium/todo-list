@@ -12,9 +12,18 @@ const btnStyles = [
   "text-lg",
 ];
 const topic = "Add project to DOM";
+const topicDelete = "Delete project from DOM";
+
 PubSub.subscribe(topic, (_msg, pageData) => {
   const projectItems = document.querySelector("#project-items");
   projectItems.appendChild(createPage(pageData));
+});
+
+PubSub.subscribe(topicDelete, (_msg, pageID) => {
+  const projectItems = document.querySelector("#project-items");
+  const projectToDelete = document.querySelector(`#${pageID}`);
+
+  projectItems.removeChild(projectToDelete);
 });
 
 function createProjects(projectsList) {
