@@ -26,6 +26,15 @@ PubSub.subscribe(topicDelete, (_msg, pageID) => {
   projectItems.removeChild(projectToDelete);
 });
 
+function handleDisplayAddForm(ev) {
+  const addProjectForm = document.querySelector("#add-project-form");
+
+  if (addProjectForm.classList.contains("invisible")) {
+    addProjectForm.classList.remove("invisible");
+    ev.target.classList.add("hidden");
+  }
+}
+
 function createProjects(projectsList) {
   const projects = document.createElement("div");
   const heading = document.createElement("h2");
@@ -46,6 +55,8 @@ function createProjects(projectsList) {
 
   addBtn.textContent = "+ Add Project";
   addBtn.classList.add(...btnStyles);
+  addBtn.addEventListener("click", handleDisplayAddForm);
+  addBtn.id = "display-add-form-btn";
   projects.appendChild(addBtn);
   projects.appendChild(addProject);
 

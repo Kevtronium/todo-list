@@ -1,6 +1,6 @@
 import PubSub from "pubsub-js";
 
-const addProjectStyles = ["flex", "flex-col", "gap-3"];
+const addProjectStyles = ["flex", "flex-col", "gap-3", "invisible"];
 const textInputStyles = ["w-full", "p-3", "rounded-md"];
 const btnStyles = {
   default: ["w-1/3", "p-2", "rounded-lg"],
@@ -11,10 +11,17 @@ const btnsContainerStyles = ["flex", "justify-between"];
 
 function handleSubmit(ev) {
   ev.preventDefault();
-  const { value } = document.querySelector("#add-project-name");
+  const textInput = document.querySelector("#add-project-name");
+  const { value } = textInput;
   const addProjectTopic = "Add Project";
 
+  textInput.value = "";
   PubSub.publish(addProjectTopic, value);
+}
+
+function handleCancel() {
+  document.querySelector("#display-add-form-btn").classList.toggle("hidden");
+  document.querySelector("#add-project-form").classList.toggle("invisible");
 }
 
 function createAddProject() {
@@ -39,12 +46,15 @@ function createAddProject() {
   cancelBtn.textContent = "Cancel";
   cancelBtn.classList.add(...btnStyles.default.concat(btnStyles.cancelStyles));
   cancelBtn.type = "reset";
+  cancelBtn.addEventListener("click", handleCancel);
   btnsContainer.classList.add(...btnsContainerStyles);
   btnsContainer.appendChild(cancelBtn);
 
   addProject.appendChild(btnsContainer);
   addProject.classList.add(...addProjectStyles);
   addProject.addEventListener("submit", handleSubmit);
+
+  addProject.id = "add-project-form";
 
   return addProject;
 }
