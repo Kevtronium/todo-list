@@ -30,9 +30,11 @@ function createApp() {
   let projectsList = [];
   const header = createHeader();
   const sidebar = createSidebar(pages, projectsList);
-  const taskView = createTaskView();
+  const taskView = createTaskView(pages[0]);
   const addProjectTopic = "Add Project";
   const deleteProjectTopic = "Delete project";
+  const changePageTopic = "Change Page";
+  const changeToInbox = "Change Taskviewer to Inbox";
 
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
@@ -46,6 +48,24 @@ function createApp() {
     projectsList = projectsList.filter((ele) => ele.id !== pageID);
 
     PubSub.publish(topic, pageID);
+  });
+
+  PubSub.subscribe(changePageTopic, (_msg, pageID) => {
+    const topic = "Update Taskviewer";
+    let targetPage = null;
+
+    if (pageID.includes("id")) {
+      [targetPage] = projectsList.filter((ele) => ele.id === pageID);
+    } else {
+      [targetPage] = pages.filter((ele) => ele.id === pageID);
+    }
+
+    PubSub.publish(topic, targetPage);
+  });
+
+  PubSub.subscribe(changeToInbox, () => {
+    const taskViewerName = document.querySelector("#taskview-name");
+    taskViewerName.textContent = pages[0].name;
   });
 
   app.classList.add(...appStyles);

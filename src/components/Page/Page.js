@@ -26,7 +26,10 @@ function handleDelete(ev) {
 
   if (isActive) {
     const inboxPage = document.querySelector("#inbox");
+    const changeTaskViewer = "Change Taskviewer to Inbox";
     inboxPage.classList.add(...pageStyles.active);
+
+    PubSub.publish(changeTaskViewer);
   }
 
   PubSub.publish(topic, pageID);
@@ -34,9 +37,13 @@ function handleDelete(ev) {
 
 function handleClick(ev) {
   const lastActiveEle = document.querySelector(".active");
+  const topic = "Change Page";
+  const { id: pageID } = ev.target;
 
   lastActiveEle.classList.remove(...pageStyles.active);
   ev.target.classList.add(...pageStyles.active);
+
+  PubSub.publish(topic, pageID);
 }
 
 function createPage(page) {
