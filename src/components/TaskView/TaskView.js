@@ -1,6 +1,6 @@
 import PubSub from "pubsub-js";
 
-const taskViewStyles = ["bg-green-500", "col-start-2", "cols-span-1", "p-6"];
+const taskViewStyles = ["col-start-2", "cols-span-1", "p-6"];
 const headingStyles = ["font-bold", "text-3xl"];
 
 const topic = "Update Taskviewer";
@@ -12,11 +12,13 @@ PubSub.subscribe(topic, (_msg, page) => {
 function createTaskView(page) {
   const taskView = document.createElement("main");
   const heading = document.createElement("h2");
+  const tasksContainer = document.createElement("div");
 
   heading.textContent = page.name;
   heading.classList.add(...headingStyles);
   heading.id = "taskview-name";
   taskView.appendChild(heading);
+  taskView.appendChild(tasksContainer);
 
   taskView.classList.add(...taskViewStyles);
 
