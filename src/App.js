@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import createHeader from "./components/Header/Header";
 import createSidebar from "./components/SideBar/SideBar";
 import createTaskView from "./components/TaskView/TaskView";
+import createTaskModal from "./components/TaskModal/TaskModal";
 
 const appStyles = [
   "grid",
@@ -31,6 +32,7 @@ function createApp() {
   const header = createHeader();
   const sidebar = createSidebar(pages, projectsList);
   const taskView = createTaskView(pages[0]);
+  const taskModal = createTaskModal();
   const addProjectTopic = "Add Project";
   const deleteProjectTopic = "Delete project";
   const changePageTopic = "Change Page";
@@ -69,6 +71,7 @@ function createApp() {
   });
 
   app.classList.add(...appStyles);
+  app.appendChild(taskModal);
   app.appendChild(header);
   app.appendChild(sidebar);
   app.appendChild(taskView);
