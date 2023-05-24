@@ -1,3 +1,5 @@
+import PubSub from "pubsub-js";
+
 const modalStyles = [
   "fixed",
   "left-0",
@@ -42,6 +44,21 @@ function createTaskModal() {
   const modal = document.createElement("div");
   const content = document.createElement("div");
   const form = document.createElement("form");
+  const toggleTopic = "Toggle Modal";
+  const blurTopic = "Toggle Blur";
+
+  function toggleModal() {
+    modal.classList.toggle(hidden);
+  }
+
+  PubSub.subscribe(toggleTopic, () => {
+    toggleModal();
+  });
+
+  function handleCloseModal() {
+    PubSub.publish(blurTopic);
+    toggleModal();
+  }
 
   const titleInput = document.createElement("input");
   titleInput.type = "text";
@@ -84,6 +101,7 @@ function createTaskModal() {
   const cancelBtn = document.createElement("button");
   cancelBtn.type = "reset";
   cancelBtn.textContent = "Cancel";
+  cancelBtn.addEventListener("click", handleCloseModal);
   cancelBtn.classList.add(...btnStyles);
   btnsContainer.appendChild(cancelBtn);
 

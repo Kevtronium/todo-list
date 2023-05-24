@@ -23,6 +23,14 @@ PubSub.subscribe(topic, (_msg, page) => {
   document.querySelector("#taskview-name").textContent = page.name;
 });
 
+function handleDisplayModal() {
+  const blurTopic = "Toggle Blur";
+  const modalTopic = "Toggle Modal";
+
+  PubSub.publish(blurTopic);
+  PubSub.publish(modalTopic);
+}
+
 function createTaskView(page) {
   const taskView = document.createElement("main");
   const heading = document.createElement("h2");
@@ -49,6 +57,7 @@ function createTaskView(page) {
   btnText.classList.add(...btnTextStyles);
   addTaskBtn.appendChild(btnText);
   addTaskBtn.classList.add(...btnStyles);
+  addTaskBtn.addEventListener("click", handleDisplayModal);
   taskView.appendChild(addTaskBtn);
 
   taskView.classList.add(...taskViewStyles);

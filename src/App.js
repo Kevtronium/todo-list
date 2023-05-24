@@ -12,6 +12,8 @@ const appStyles = [
   "h-screen",
 ];
 
+const blurStyle = "blur-sm";
+
 function page(
   name,
   isActive = false,
@@ -37,6 +39,7 @@ function createApp() {
   const deleteProjectTopic = "Delete project";
   const changePageTopic = "Change Page";
   const changeToInbox = "Change Taskviewer to Inbox";
+  const blurTopic = "Toggle Blur";
 
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
@@ -68,6 +71,12 @@ function createApp() {
   PubSub.subscribe(changeToInbox, () => {
     const taskViewerName = document.querySelector("#taskview-name");
     taskViewerName.textContent = pages[0].name;
+  });
+
+  PubSub.subscribe(blurTopic, () => {
+    header.classList.toggle(blurStyle);
+    sidebar.classList.toggle(blurStyle);
+    taskView.classList.toggle(blurStyle);
   });
 
   app.classList.add(...appStyles);
