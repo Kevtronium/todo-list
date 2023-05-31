@@ -1,3 +1,5 @@
+import PubSub from "pubsub-js";
+
 const taskContainerStyles = [
   "task",
   "flex",
@@ -49,6 +51,16 @@ const iconStyles = ["h-6", "w-6", "hover:fill-slate-400", "active:fill-black"];
 function createTask(task) {
   const taskContainer = document.createElement("div");
 
+  function handleDelete() {
+    const deleteData = {};
+    const deleteTaskTopic = "Delete Task";
+
+    deleteData.taskID = task.id;
+    deleteData.pageID = document.querySelector(".active").id;
+
+    PubSub.publish(deleteTaskTopic, deleteData);
+  }
+
   const leftSideContainer = document.createElement("div");
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
@@ -96,6 +108,7 @@ function createTask(task) {
   deleteIcon.appendChild(deleteIconPath);
   deleteIcon.setAttribute("viewBox", "0 0 24 24");
   deleteIcon.classList.add(...iconStyles);
+  deleteIcon.addEventListener("click", handleDelete);
   rightSideContainer.appendChild(deleteIcon);
 
   rightSideContainer.classList.add(...rightSideContainerStyles);

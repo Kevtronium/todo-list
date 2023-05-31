@@ -45,6 +45,7 @@ function createApp() {
   const changeToInbox = "Change Taskviewer to Inbox";
   const blurTopic = "Toggle Blur";
   const updateTasksTopic = "Update Task List";
+  const deleteTaskTopic = "Delete Task";
 
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
@@ -98,6 +99,22 @@ function createApp() {
     );
 
     PubSub.publish(addTaskTopic, targetPage.tasks[targetPage.tasks.length - 1]);
+  });
+
+  PubSub.subscribe(deleteTaskTopic, (_msg, deleteData) => {
+    let targetPage = null;
+    const removeTaskUITopic = "Remove Task from UI";
+
+    if (deleteData.pageID.includes("id")) {
+      [targetPage] = projectsList.filter((ele) => ele.id === deleteData.pageID);
+    } else {
+      [targetPage] = pages.filter((ele) => ele.id === deleteData.pageID);
+    }
+
+    targetPage.tasks = targetPage.tasks.filter(
+      (ele) => ele.id !== deleteData.taskID
+    );
+    PubSub.publish(removeTaskUITopic, deleteData.taskID);
   });
 
   app.classList.add(...appStyles);

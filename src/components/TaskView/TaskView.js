@@ -33,6 +33,7 @@ function createTaskView(page) {
   const addTaskBtn = document.createElement("button");
   const addTaskTopic = "Add Task to UI";
   const updateTopic = "Update Taskviewer";
+  const removeTaskTopic = "Remove Task from UI";
 
   PubSub.subscribe(updateTopic, (_msg, pageData) => {
     heading.textContent = pageData.name;
@@ -45,6 +46,10 @@ function createTaskView(page) {
 
   PubSub.subscribe(addTaskTopic, (_msg, task) => {
     tasksContainer.appendChild(createTask(task));
+  });
+
+  PubSub.subscribe(removeTaskTopic, (_msg, taskID) => {
+    tasksContainer.removeChild(document.querySelector(`#${taskID}`));
   });
 
   heading.textContent = page.name;
