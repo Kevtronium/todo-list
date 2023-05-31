@@ -56,20 +56,24 @@ function createTask(task) {
   leftSideContainer.appendChild(checkbox);
 
   const text = document.createElement("p");
-  text.textContent = task.text;
+  text.textContent = task.title;
   leftSideContainer.appendChild(text);
   leftSideContainer.classList.add(...leftSideContainerStyles);
   taskContainer.appendChild(leftSideContainer);
 
   const rightSideContainer = document.createElement("div");
+  const dueDate = document.createElement("p");
+  if (task.dueDate === "") {
+    dueDate.textContent = "No Due Date";
+  } else {
+    dueDate.textContent = task.dueDate;
+  }
+  rightSideContainer.appendChild(dueDate);
+
   const detailsBtn = document.createElement("button");
   detailsBtn.textContent = "Details";
   detailsBtn.classList.add(...detailsBtnStyles);
   rightSideContainer.appendChild(detailsBtn);
-
-  const dueDate = document.createElement("p");
-  dueDate.textContent = task.dueDate;
-  rightSideContainer.appendChild(dueDate);
 
   const svgNamespace = "http://www.w3.org/2000/svg";
   const editIcon = document.createElementNS(svgNamespace, "svg");
@@ -95,6 +99,7 @@ function createTask(task) {
   rightSideContainer.appendChild(deleteIcon);
 
   rightSideContainer.classList.add(...rightSideContainerStyles);
+  taskContainer.id = task.id;
   taskContainer.appendChild(rightSideContainer);
   taskContainer.classList.add(...taskContainerStyles);
 

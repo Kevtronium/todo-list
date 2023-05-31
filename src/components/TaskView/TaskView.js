@@ -1,4 +1,5 @@
 import PubSub from "pubsub-js";
+import createTask from "../Task/Task";
 
 const taskViewStyles = ["col-start-2", "cols-span-1", "p-6"];
 const headingStyles = ["font-bold", "text-3xl"];
@@ -17,12 +18,6 @@ const btnStyles = [
   "active:bg-slate-500",
 ];
 
-const topic = "Update Taskviewer";
-
-PubSub.subscribe(topic, (_msg, page) => {
-  document.querySelector("#taskview-name").textContent = page.name;
-});
-
 function handleDisplayModal() {
   const blurTopic = "Toggle Blur";
   const modalTopic = "Toggle Modal";
@@ -36,11 +31,30 @@ function createTaskView(page) {
   const heading = document.createElement("h2");
   const tasksContainer = document.createElement("div");
   const addTaskBtn = document.createElement("button");
+  const addTaskTopic = "Add Task to UI";
+  const updateTopic = "Update Taskviewer";
+
+  PubSub.subscribe(updateTopic, (_msg, pageData) => {
+    heading.textContent = pageData.name;
+    const taskEles = [];
+    pageData.tasks.forEach((ele) => {
+      taskEles.push(createTask(ele));
+    });
+    tasksContainer.replaceChildren(...taskEles);
+  });
+
+  PubSub.subscribe(addTaskTopic, (_msg, task) => {
+    tasksContainer.appendChild(createTask(task));
+  });
 
   heading.textContent = page.name;
   heading.classList.add(...headingStyles);
   heading.id = "taskview-name";
   taskView.appendChild(heading);
+
+  page.tasks.forEach((ele) => {
+    tasksContainer.appendChild(createTask(ele));
+  });
   taskView.appendChild(tasksContainer);
 
   const svgNamespace = "http://www.w3.org/2000/svg";

@@ -60,6 +60,34 @@ function createTaskModal() {
     toggleModal();
   }
 
+  function formateDate(date) {
+    let formattedDate = date.slice(5);
+    formattedDate += `-${date.slice(0, 4)}`;
+
+    return formattedDate;
+  }
+
+  function handleSubmit(ev) {
+    ev.preventDefault();
+    toggleModal();
+
+    const task = {};
+    const { value: dueDate } = document.querySelector("#modal-task-due-date");
+    task.title = document.querySelector("#modal-task-title").value;
+    task.details = document.querySelector("#modal-task-details").value;
+    if (dueDate === "") {
+      task.dueDate = dueDate;
+    } else {
+      task.dueDate = formateDate(dueDate);
+    }
+    task.listID = document.querySelector(".active").id;
+    ev.target.reset();
+
+    const updateTaskTopic = "Update Task List";
+    PubSub.publish(updateTaskTopic, task);
+    PubSub.publish(blurTopic);
+  }
+
   const titleInput = document.createElement("input");
   titleInput.type = "text";
   titleInput.id = "modal-task-title";
@@ -109,6 +137,7 @@ function createTaskModal() {
   form.appendChild(btnsContainer);
 
   form.classList.add(...formStyles);
+  form.addEventListener("submit", handleSubmit);
   content.appendChild(form);
   content.classList.add(...contentStyles);
   modal.appendChild(content);

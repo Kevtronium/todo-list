@@ -23,6 +23,10 @@ function page(
   return { name, isActive, isDeletable, id, tasks: [] };
 }
 
+function task(title, dueDate, details) {
+  return { title, details, isDone: false, dueDate, id: `task${uuidv4()}` };
+}
+
 function createApp() {
   const app = document.createElement("div");
   const pages = [
@@ -40,6 +44,7 @@ function createApp() {
   const changePageTopic = "Change Page";
   const changeToInbox = "Change Taskviewer to Inbox";
   const blurTopic = "Toggle Blur";
+  const updateTasksTopic = "Update Task List";
 
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
@@ -77,6 +82,22 @@ function createApp() {
     header.classList.toggle(blurStyle);
     sidebar.classList.toggle(blurStyle);
     taskView.classList.toggle(blurStyle);
+  });
+
+  PubSub.subscribe(updateTasksTopic, (_msg, taskData) => {
+    let targetPage = null;
+    const addTaskTopic = "Add Task to UI";
+
+    if (taskData.listID.includes("id")) {
+      [targetPage] = projectsList.filter((ele) => ele.id === taskData.listID);
+    } else {
+      [targetPage] = pages.filter((ele) => ele.id === taskData.listID);
+    }
+    targetPage.tasks.push(
+      task(taskData.title, taskData.dueDate, taskData.details)
+    );
+
+    PubSub.publish(addTaskTopic, targetPage.tasks[targetPage.tasks.length - 1]);
   });
 
   app.classList.add(...appStyles);
