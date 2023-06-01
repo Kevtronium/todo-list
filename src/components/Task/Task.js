@@ -47,9 +47,11 @@ const detailsBtnStyles = [
   "active:text-black",
 ];
 const iconStyles = ["h-6", "w-6", "hover:fill-slate-400", "active:fill-black"];
+const editStyle = "editing-task";
 
 function createTask(task) {
   const taskContainer = document.createElement("div");
+  const editStyleTopic = "Toggle Edit Style";
 
   function handleDelete() {
     const deleteData = {};
@@ -59,6 +61,21 @@ function createTask(task) {
     deleteData.pageID = document.querySelector(".active").id;
 
     PubSub.publish(deleteTaskTopic, deleteData);
+  }
+
+  function toggleEditStyle() {
+    taskContainer.classList.toggle(editStyle);
+  }
+
+  PubSub.subscribe(editStyleTopic, toggleEditStyle);
+
+  function handleEdit() {
+    const topic = "Display Edit Modal";
+    const taskToEdit = { ...task };
+    taskToEdit.PageID = document.querySelector(".active").id;
+
+    PubSub.publish(editStyleTopic);
+    PubSub.publish(topic, taskToEdit);
   }
 
   const leftSideContainer = document.createElement("div");
@@ -96,6 +113,7 @@ function createTask(task) {
   );
   editIcon.appendChild(editIconPath);
   editIcon.setAttribute("viewBox", "0 0 24 24");
+  editIcon.addEventListener("click", handleEdit);
   editIcon.classList.add(...iconStyles);
   rightSideContainer.appendChild(editIcon);
 

@@ -46,30 +46,59 @@ function createTaskModal() {
   const form = document.createElement("form");
   const toggleTopic = "Toggle Modal";
   const blurTopic = "Toggle Blur";
+  const editModalTopic = "Display Edit Modal";
+  const editStyleTopic = "Toggle Edit Style";
 
   function toggleModal() {
     modal.classList.toggle(hidden);
   }
 
-  PubSub.subscribe(toggleTopic, () => {
-    toggleModal();
-  });
-
-  function handleCloseModal() {
-    PubSub.publish(blurTopic);
-    toggleModal();
-  }
-
-  function formateDate(date) {
+  function formatDate(date) {
     let formattedDate = date.slice(5);
     formattedDate += `-${date.slice(0, 4)}`;
 
     return formattedDate;
   }
 
-  function handleSubmit(ev) {
-    ev.preventDefault();
+  function revertFormattedDate(date) {
+    let revertedDate = date.slice(6);
+    revertedDate += `-${date.slice(0, 5)}`;
+
+    return revertedDate;
+  }
+
+  PubSub.subscribe(toggleTopic, () => {
     toggleModal();
+  });
+
+  PubSub.subscribe(editModalTopic, (_msg, task) => {
+    document.querySelector("#modal-task-title").value = task.title;
+    document.querySelector("#modal-task-details").value = task.details;
+    document.querySelector("#modal-task-due-date").value = revertFormattedDate(
+      task.dueDate
+    );
+    document.querySelector("#modal-submit-btn").textContent = "Save Changes";
+
+    toggleModal();
+    PubSub.publish(blurTopic);
+  });
+
+  function handleCloseModal() {
+    PubSub.publish(blurTopic);
+    toggleModal();
+    const submitBtn = document.querySelector("#modal-submit-btn");
+
+    if (submitBtn.textContent === "Save Changes") {
+      submitBtn.textContent = "Create Task";
+      PubSub.publish(editStyleTopic);
+    }
+  }
+
+  function handleSubmit(ev) {
+    const { textContent: btnText } =
+      document.querySelector("#modal-submit-btn");
+    let topic = "Update Task List";
+    ev.preventDefault();
 
     const task = {};
     const { value: dueDate } = document.querySelector("#modal-task-due-date");
@@ -78,14 +107,21 @@ function createTaskModal() {
     if (dueDate === "") {
       task.dueDate = dueDate;
     } else {
-      task.dueDate = formateDate(dueDate);
+      task.dueDate = formatDate(dueDate);
     }
     task.listID = document.querySelector(".active").id;
-    ev.target.reset();
 
-    const updateTaskTopic = "Update Task List";
-    PubSub.publish(updateTaskTopic, task);
+    if (btnText === "Save Changes") {
+      topic = "Edit Task";
+      document.querySelector("#modal-submit-btn").textContent = "Create Task";
+      task.id = document.querySelector(".editing-task").id;
+    }
+
+    toggleModal();
+    ev.target.reset();
     PubSub.publish(blurTopic);
+    PubSub.publish(editStyleTopic);
+    PubSub.publish(topic, task);
   }
 
   const titleInput = document.createElement("input");
@@ -123,6 +159,7 @@ function createTaskModal() {
   const submitBtn = document.createElement("button");
   submitBtn.type = "submit";
   submitBtn.textContent = "Create Task";
+  submitBtn.id = "modal-submit-btn";
   submitBtn.classList.add(...btnStyles);
   btnsContainer.appendChild(submitBtn);
 
@@ -130,6 +167,7 @@ function createTaskModal() {
   cancelBtn.type = "reset";
   cancelBtn.textContent = "Cancel";
   cancelBtn.addEventListener("click", handleCloseModal);
+  cancelBtn.id = "modal-cancel-btn";
   cancelBtn.classList.add(...btnStyles);
   btnsContainer.appendChild(cancelBtn);
 

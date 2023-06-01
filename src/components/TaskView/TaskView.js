@@ -34,6 +34,7 @@ function createTaskView(page) {
   const addTaskTopic = "Add Task to UI";
   const updateTopic = "Update Taskviewer";
   const removeTaskTopic = "Remove Task from UI";
+  const updateTaskUI = "Update Task UI";
 
   PubSub.subscribe(updateTopic, (_msg, pageData) => {
     heading.textContent = pageData.name;
@@ -50,6 +51,18 @@ function createTaskView(page) {
 
   PubSub.subscribe(removeTaskTopic, (_msg, taskID) => {
     tasksContainer.removeChild(document.querySelector(`#${taskID}`));
+  });
+
+  PubSub.subscribe(updateTaskUI, (_msg, taskData) => {
+    const taskToEdit = document.querySelector(`#${taskData.id}`);
+    const paraEles = taskToEdit.querySelectorAll("p");
+
+    paraEles[0].textContent = taskData.title;
+    if (taskData.dueDate === "") {
+      paraEles[1].textContent = "No Due Date";
+    } else {
+      paraEles[1].textContent = taskData.dueDate;
+    }
   });
 
   heading.textContent = page.name;

@@ -46,6 +46,7 @@ function createApp() {
   const blurTopic = "Toggle Blur";
   const updateTasksTopic = "Update Task List";
   const deleteTaskTopic = "Delete Task";
+  const editTaskTopic = "Edit Task";
 
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
@@ -115,6 +116,26 @@ function createApp() {
       (ele) => ele.id !== deleteData.taskID
     );
     PubSub.publish(removeTaskUITopic, deleteData.taskID);
+  });
+
+  PubSub.subscribe(editTaskTopic, (_msg, taskData) => {
+    let targetPage = null;
+    const updateTaskUITopic = "Update Task UI";
+
+    if (taskData.listID.includes("id")) {
+      [targetPage] = projectsList.filter((ele) => ele.id === taskData.listID);
+    } else {
+      [targetPage] = pages.filter((ele) => ele.id === taskData.listID);
+    }
+
+    const [taskToEdit] = targetPage.tasks.filter(
+      (ele) => ele.id === taskData.id
+    );
+    taskToEdit.title = taskData.title;
+    taskToEdit.details = taskData.details;
+    taskToEdit.dueDate = taskData.dueDate;
+
+    PubSub.publish(updateTaskUITopic, taskToEdit);
   });
 
   app.classList.add(...appStyles);
