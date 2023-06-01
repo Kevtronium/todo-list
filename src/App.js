@@ -48,6 +48,18 @@ function createApp() {
   const deleteTaskTopic = "Delete Task";
   const editTaskTopic = "Edit Task";
 
+  function getPage(pageID) {
+    let targetPage = null;
+
+    if (pageID.includes("id")) {
+      [targetPage] = projectsList.filter((ele) => ele.id === pageID);
+    } else {
+      [targetPage] = pages.filter((ele) => ele.id === pageID);
+    }
+
+    return targetPage;
+  }
+
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
     const newPage = page(pageName, false, true);
@@ -87,14 +99,9 @@ function createApp() {
   });
 
   PubSub.subscribe(updateTasksTopic, (_msg, taskData) => {
-    let targetPage = null;
+    const targetPage = getPage(taskData.listID);
     const addTaskTopic = "Add Task to UI";
 
-    if (taskData.listID.includes("id")) {
-      [targetPage] = projectsList.filter((ele) => ele.id === taskData.listID);
-    } else {
-      [targetPage] = pages.filter((ele) => ele.id === taskData.listID);
-    }
     targetPage.tasks.push(
       task(taskData.title, taskData.dueDate, taskData.details)
     );
@@ -103,14 +110,8 @@ function createApp() {
   });
 
   PubSub.subscribe(deleteTaskTopic, (_msg, deleteData) => {
-    let targetPage = null;
+    const targetPage = getPage(deleteData.pageID);
     const removeTaskUITopic = "Remove Task from UI";
-
-    if (deleteData.pageID.includes("id")) {
-      [targetPage] = projectsList.filter((ele) => ele.id === deleteData.pageID);
-    } else {
-      [targetPage] = pages.filter((ele) => ele.id === deleteData.pageID);
-    }
 
     targetPage.tasks = targetPage.tasks.filter(
       (ele) => ele.id !== deleteData.taskID
@@ -119,14 +120,8 @@ function createApp() {
   });
 
   PubSub.subscribe(editTaskTopic, (_msg, taskData) => {
-    let targetPage = null;
+    const targetPage = getPage(taskData.listID);
     const updateTaskUITopic = "Update Task UI";
-
-    if (taskData.listID.includes("id")) {
-      [targetPage] = projectsList.filter((ele) => ele.id === taskData.listID);
-    } else {
-      [targetPage] = pages.filter((ele) => ele.id === taskData.listID);
-    }
 
     const [taskToEdit] = targetPage.tasks.filter(
       (ele) => ele.id === taskData.id
