@@ -28,9 +28,10 @@ const checkboxStyles = [
   "before:w-3",
   "before:origin-bottom-left",
   "before:scale-0",
-  "before:bg-blue-500",
+  "before:bg-white",
   "before:transition-transform",
   "checked:before:scale-100",
+  "checked:bg-blue-500",
 ];
 
 const rightSideContainerStyles = ["flex", "items-center", "gap-6"];
@@ -48,6 +49,8 @@ const detailsBtnStyles = [
 ];
 const iconStyles = ["h-6", "w-6", "hover:fill-slate-400", "active:fill-black"];
 const editStyle = "editing-task";
+const finishedStyle = "opacity-40";
+const textFinishedStyle = "line-through";
 
 function createTask(task) {
   const taskContainer = document.createElement("div");
@@ -133,6 +136,32 @@ function createTask(task) {
   taskContainer.id = task.id;
   taskContainer.appendChild(rightSideContainer);
   taskContainer.classList.add(...taskContainerStyles);
+
+  function toggleFinishedState() {
+    text.classList.toggle(finishedStyle);
+    text.classList.toggle(textFinishedStyle);
+    rightSideContainer.classList.toggle(finishedStyle);
+  }
+
+  function handleFinishedClick() {
+    const topic = "Toggle Task Done State";
+    const taskData = {};
+
+    toggleFinishedState();
+
+    taskData.id = task.id;
+    taskData.isDone = !task.isDone;
+    taskData.pageID = document.querySelector(".active").id;
+
+    PubSub.publish(topic, taskData);
+  }
+
+  checkbox.addEventListener("click", handleFinishedClick);
+
+  if (task.isDone) {
+    toggleFinishedState();
+    checkbox.checked = true;
+  }
 
   return taskContainer;
 }

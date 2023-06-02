@@ -47,6 +47,7 @@ function createApp() {
   const updateTasksTopic = "Update Task List";
   const deleteTaskTopic = "Delete Task";
   const editTaskTopic = "Edit Task";
+  const finishedTaskTopic = "Toggle Task Done State";
 
   function getPage(pageID) {
     let targetPage = null;
@@ -131,6 +132,15 @@ function createApp() {
     taskToEdit.dueDate = taskData.dueDate;
 
     PubSub.publish(updateTaskUITopic, taskToEdit);
+  });
+
+  PubSub.subscribe(finishedTaskTopic, (_msg, taskData) => {
+    const targetPage = getPage(taskData.pageID);
+
+    const [targetTask] = targetPage.tasks.filter(
+      (ele) => ele.id === taskData.id
+    );
+    targetTask.isDone = taskData.isDone;
   });
 
   app.classList.add(...appStyles);
