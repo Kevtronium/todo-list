@@ -39,6 +39,7 @@ const dueDateContainerStyles = ["space-x-2"];
 const dueDateInputStyles = ["rounded-sm", "p-1"];
 const btnsContainerStyles = ["flex", "justify-between"];
 const hidden = "hidden";
+const editStyle = "editing-task";
 
 function createTaskModal() {
   const modal = document.createElement("div");
@@ -47,7 +48,7 @@ function createTaskModal() {
   const toggleTopic = "Toggle Modal";
   const blurTopic = "Toggle Blur";
   const editModalTopic = "Display Edit Modal";
-  const editStyleTopic = "Toggle Edit Style";
+  const editTaskData = {};
 
   function toggleModal() {
     modal.classList.toggle(hidden);
@@ -67,6 +68,10 @@ function createTaskModal() {
     return revertedDate;
   }
 
+  function toggleEditStyle() {
+    document.querySelector(`#${editTaskData.id}`).classList.toggle(editStyle);
+  }
+
   PubSub.subscribe(toggleTopic, () => {
     toggleModal();
   });
@@ -80,6 +85,8 @@ function createTaskModal() {
     document.querySelector("#modal-submit-btn").textContent = "Save Changes";
 
     toggleModal();
+    editTaskData.id = task.id;
+    toggleEditStyle();
     PubSub.publish(blurTopic);
   });
 
@@ -90,7 +97,7 @@ function createTaskModal() {
 
     if (submitBtn.textContent === "Save Changes") {
       submitBtn.textContent = "Create Task";
-      PubSub.publish(editStyleTopic);
+      toggleEditStyle();
     }
   }
 
@@ -114,13 +121,13 @@ function createTaskModal() {
     if (btnText === "Save Changes") {
       topic = "Edit Task";
       document.querySelector("#modal-submit-btn").textContent = "Create Task";
-      task.id = document.querySelector(".editing-task").id;
+      task.id = editTaskData.id;
+      toggleEditStyle();
     }
 
     toggleModal();
     ev.target.reset();
     PubSub.publish(blurTopic);
-    PubSub.publish(editStyleTopic);
     PubSub.publish(topic, task);
   }
 

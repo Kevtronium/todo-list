@@ -48,13 +48,11 @@ const detailsBtnStyles = [
   "active:text-black",
 ];
 const iconStyles = ["h-6", "w-6", "hover:fill-slate-400", "active:fill-black"];
-const editStyle = "editing-task";
 const finishedStyle = "opacity-40";
 const textFinishedStyle = "line-through";
 
 function createTask(task) {
   const taskContainer = document.createElement("div");
-  const editStyleTopic = "Toggle Edit Style";
 
   function handleDelete() {
     const deleteData = {};
@@ -66,18 +64,12 @@ function createTask(task) {
     PubSub.publish(deleteTaskTopic, deleteData);
   }
 
-  function toggleEditStyle() {
-    taskContainer.classList.toggle(editStyle);
-  }
-
-  PubSub.subscribe(editStyleTopic, toggleEditStyle);
-
   function handleEdit() {
     const topic = "Display Edit Modal";
     const taskToEdit = { ...task };
+
     taskToEdit.PageID = document.querySelector(".active").id;
 
-    PubSub.publish(editStyleTopic);
     PubSub.publish(topic, taskToEdit);
   }
 
