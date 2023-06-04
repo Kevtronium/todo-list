@@ -148,7 +148,26 @@ function createTask(task) {
     PubSub.publish(topic, taskData);
   }
 
+  function handleDetailsClick() {
+    const detailsTopic = "Toggle Details View";
+    const blurTopic = "Toggle Blur";
+    const taskData = { ...task };
+    const page = document.querySelector(".active");
+
+    if (page.id.includes("id")) {
+      // Project Pages will add an X's to Project text in DetailsView
+      // Need to remove the X
+      taskData.page = page.textContent.slice(0, page.textContent.length - 1);
+    } else {
+      taskData.page = page.textContent;
+    }
+
+    PubSub.publish(detailsTopic, taskData);
+    PubSub.publish(blurTopic);
+  }
+
   checkbox.addEventListener("click", handleFinishedClick);
+  detailsBtn.addEventListener("click", handleDetailsClick);
 
   if (task.isDone) {
     toggleFinishedState();

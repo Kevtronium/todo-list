@@ -1,3 +1,5 @@
+import PubSub from "pubsub-js";
+
 const bkgdContainerStyles = [
   "fixed",
   "left-0",
@@ -37,15 +39,26 @@ const btnStyles = [
   "active:bg-gray-700",
 ];
 
+const hidden = "hidden";
+
 function createInfoElement(labelText, text) {
   const infoEle = document.createElement("p");
   const label = document.createElement("span");
+  const textEle = document.createElement("span");
+
   label.textContent = `${labelText}: `;
   label.classList.add(...labelStyles);
+  textEle.textContent = text;
 
-  infoEle.append(label, text);
+  infoEle.appendChild(label);
+  infoEle.appendChild(textEle);
 
   return infoEle;
+}
+
+function changeInfoText(infoEle, newText) {
+  const textEle = infoEle.querySelectorAll("span")[1];
+  textEle.textContent = newText;
 }
 
 function createDetailsView(task) {
@@ -65,7 +78,7 @@ function createDetailsView(task) {
   const dueDate = createInfoElement("Due Date", dueDateText);
   container.appendChild(dueDate);
 
-  const details = createInfoElement("Details: ", task.details);
+  const details = createInfoElement("Details", task.details);
   container.appendChild(details);
   content.appendChild(container);
 
@@ -78,6 +91,31 @@ function createDetailsView(task) {
   bkgdContainer.appendChild(content);
 
   bkgdContainer.classList.add(...bkgdContainerStyles);
+
+  function toggleHidden() {
+    bkgdContainer.classList.toggle(hidden);
+  }
+
+  function handleCloseClick() {
+    const blurTopic = "Toggle Blur";
+
+    toggleHidden();
+    PubSub.publish(blurTopic);
+  }
+
+  closeBtn.addEventListener("click", handleCloseClick);
+
+  const toggleDetailsTopic = "Toggle Details View";
+
+  PubSub.subscribe(toggleDetailsTopic, (_msg, taskData) => {
+    taskTitle.textContent = taskData.title;
+    changeInfoText(project, taskData.page);
+    changeInfoText(dueDate, taskData.dueDate);
+    changeInfoText(details, taskData.details);
+    toggleHidden();
+  });
+
+  toggleHidden();
 
   return bkgdContainer;
 }
