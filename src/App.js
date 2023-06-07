@@ -5,6 +5,7 @@ import createSidebar from "./components/SideBar/SideBar";
 import createTaskView from "./components/TaskView/TaskView";
 import createTaskModal from "./components/TaskModal/TaskModal";
 import createDetailsView from "./components/DetailsView/DetailsView";
+import storageSystem from "./storage";
 
 const appStyles = [
   "grid",
@@ -30,22 +31,14 @@ function task(title, dueDate, details) {
 
 function createApp() {
   const app = document.createElement("div");
-  const pages = [
-    page("Inbox", true, false, "inbox"),
-    page("Today", false, false, "today"),
-    page("Weekly", false, false, "weekly"),
-  ];
-  let projectsList = [];
-  pages[0].tasks.push(
-    task("Buy some Milk", "", "Go to the store and buy some milk")
-  );
-  pages[0].tasks.push(task("Wash the Car", "", ""));
+  const pages = storageSystem.loadPages();
+  let projectsList = storageSystem.loadProjects();
   const header = createHeader();
   const sidebar = createSidebar(pages, projectsList);
   const taskView = createTaskView(pages[0]);
   const taskModal = createTaskModal();
 
-  const detailsView = createDetailsView(pages[0].tasks[0]);
+  const detailsView = createDetailsView(task("Something", "", ""));
   const addProjectTopic = "Add Project";
   const deleteProjectTopic = "Delete project";
   const changePageTopic = "Change Page";
@@ -68,16 +61,38 @@ function createApp() {
     return targetPage;
   }
 
+  function isProject(pageID) {
+    let result = false;
+
+    if (pageID.includes("id")) {
+      result = true;
+    }
+
+    return result;
+  }
+
+  function saveData(pageID) {
+    if (isProject(pageID)) {
+      storageSystem.updateProjects(projectsList);
+    } else {
+      storageSystem.updatePages(pages);
+    }
+  }
+
   PubSub.subscribe(addProjectTopic, (_msg, pageName) => {
     const topic = "Add project to DOM";
     const newPage = page(pageName, false, true);
     projectsList.push(newPage);
+
+    storageSystem.updateProjects(projectsList);
     PubSub.publish(topic, newPage);
   });
 
   PubSub.subscribe(deleteProjectTopic, (_msg, pageID) => {
     const topic = "Delete project from DOM";
     projectsList = projectsList.filter((ele) => ele.id !== pageID);
+
+    storageSystem.updateProjects(projectsList);
 
     PubSub.publish(topic, pageID);
   });
@@ -114,6 +129,9 @@ function createApp() {
       task(taskData.title, taskData.dueDate, taskData.details)
     );
 
+    saveData(targetPage.id);
+
+    storageSystem.updatePages(pages);
     PubSub.publish(addTaskTopic, targetPage.tasks[targetPage.tasks.length - 1]);
   });
 
@@ -124,6 +142,8 @@ function createApp() {
     targetPage.tasks = targetPage.tasks.filter(
       (ele) => ele.id !== deleteData.taskID
     );
+
+    saveData(targetPage.id);
     PubSub.publish(removeTaskUITopic, deleteData.taskID);
   });
 
@@ -138,6 +158,8 @@ function createApp() {
     taskToEdit.details = taskData.details;
     taskToEdit.dueDate = taskData.dueDate;
 
+    saveData(targetPage.id);
+
     PubSub.publish(updateTaskUITopic, taskToEdit);
   });
 
@@ -147,7 +169,9 @@ function createApp() {
     const [targetTask] = targetPage.tasks.filter(
       (ele) => ele.id === taskData.id
     );
+
     targetTask.isDone = taskData.isDone;
+    saveData(targetPage.id);
   });
 
   app.classList.add(...appStyles);
