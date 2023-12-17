@@ -1,4 +1,10 @@
-const headerStyles = ["bg-red-500", "col-span-2", "p-4"];
+const headerStyles = [
+  "col-span-2",
+  "p-4",
+  "border-solid",
+  "border-b-slate-300",
+  "border-b-2",
+];
 const textStyles = ["text-4xl", "font-bold"];
 
 function createHeader() {

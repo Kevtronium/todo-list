@@ -6,9 +6,10 @@ const sidebarStyles = [
   "flex",
   "flex-col",
   "cols-span-1",
-  "bg-blue-500",
   "p-6",
   "gap-4",
+  "border-r-slate-300",
+  "border-r-2",
 ];
 
 function createSidebar(pages, projectsList) {

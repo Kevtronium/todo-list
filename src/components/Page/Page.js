@@ -9,11 +9,11 @@ const pageStyles = {
     "w-full",
     "text-2xl",
     "font-bold",
-    "hover:bg-gray-400",
-    "active:bg-gray-500",
+    "hover:bg-slate-300",
+    "active:bg-slate-400",
     "text-left",
   ],
-  active: ["active", "bg-gray-500"],
+  active: ["active", "bg-slate-400"],
 };
 
 const deleteBtnStyles = ["invisible", "group-hover:visible"];

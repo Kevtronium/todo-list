@@ -1,7 +1,14 @@
 import PubSub from "pubsub-js";
 
 const addProjectStyles = ["flex", "flex-col", "gap-3", "invisible"];
-const textInputStyles = ["w-full", "p-3", "rounded-md"];
+const textInputStyles = [
+  "w-full",
+  "p-3",
+  "rounded-md",
+  "border-solid",
+  "border-slate-500",
+  "border-2",
+];
 const btnStyles = {
   default: ["w-1/3", "p-2", "rounded-lg"],
   addStyles: ["bg-green-400", "hover:bg-green-300", "active:bg-green-500"],
